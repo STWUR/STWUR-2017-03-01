@@ -44,13 +44,13 @@ temp = osoby %>%
   rename("zadowolenie"=fp4, "plec"=plec_all, "wiek_kat"=wiek6_2011)
 
 temp2 = osoby %>% 
-  select(ap4, plec_all, waga_2003_ind, wiek6_2003) %>%
+  select(ap4, plec_all, waga_2000_ind, wiek6_2000) %>%
   filter(!is.na(ap4))  %>%
-  mutate_each(funs(as_factor), -waga_2003_ind) %>%
-  group_by(ap4, plec_all, wiek6_2003) %>%
-  summarise(waga = sum(waga_2003_ind, na.rm=TRUE), rok = 2003) %>%
+  mutate_each(funs(as_factor), -waga_2000_ind) %>%
+  group_by(ap4, plec_all, wiek6_2000) %>%
+  summarise(waga = sum(waga_2000_ind, na.rm=TRUE), rok = 2000) %>%
   na.omit() %>% ungroup %>%
-  rename("zadowolenie"=ap4, "plec"=plec_all, "wiek_kat"=wiek6_2003)
+  rename("zadowolenie"=ap4, "plec"=plec_all, "wiek_kat"=wiek6_2000)
 
 zycie89 = rbind(temp, temp2) %>% 
   mutate(zadowolenie = factor(tolower(zadowolenie), levels = levels(temp$zadowolenie)[-1], ordered = T))
