@@ -76,7 +76,7 @@ Jak pamiętamy, nasze danę dotyczą lat 2003 i 2011. Możemy je rozdzielić za 
 ```{r}
 ggplot(zycie89, aes(x=wiek_kat, y=waga, fill=zadowolenie)) + 
   geom_bar(stat="identity", position = "fill") +
-  facet_grid(rok~.)
+  facet_wrap(~ rok, ncol = 1)
 ```
 
 Dla większej przejrzystości umieścmy legendę na dole. W ggplot można sterować każdym elementem wyglądu wykresu
@@ -85,7 +85,7 @@ korzystając z funkcji *theme*.
 ```{r}
 ggplot(zycie89, aes(x=wiek_kat, y=waga, fill=zadowolenie)) + 
   geom_bar(stat="identity", position = "fill") +
-  facet_grid(rok~.) +
+  facet_wrap(~ rok, ncol = 1) +
   theme(legend.position="bottom", legend.box = "horizontal")
 ```
 
@@ -94,7 +94,7 @@ Zmieńmy kolory na wybrane przez nas.
 ```{r}
 ggplot(zycie89, aes(x=wiek_kat, y=waga, fill=zadowolenie)) + 
   geom_bar(stat="identity", position = "fill") +
-  facet_grid(rok~.) +
+  facet_wrap(~ rok, ncol = 1) +
   theme(legend.position="bottom", legend.box = "horizontal") + 
   scale_fill_manual(name="", values=c("chartreuse3", "gray", "blue", "red"))
 ```
@@ -106,7 +106,7 @@ Zmieńmy oznaczenia na osi y i x. Na osi y chcemy mieć procenty, a osi x chcemy
 ```{r}
 ggplot(zycie89, aes(x=wiek_kat, y=waga, fill=zadowolenie)) + 
   geom_bar(stat="identity", position = "fill") +
-  facet_grid(rok~.) +
+  facet_wrap(~ rok, ncol = 1) +
   theme(legend.position="bottom", legend.box = "horizontal") + 
   scale_fill_manual(name="", values=c("chartreuse3", "gray", "blue", "red")) +
   scale_y_continuous(labels = scales::percent) +
@@ -126,7 +126,7 @@ display.brewer.all()
 ```{r}
 ggplot(zycie89, aes(x=wiek_kat, y=waga, fill=zadowolenie)) + 
   geom_bar(stat="identity", position = "fill") +
-  facet_grid(rok~.) +
+  facet_wrap(~ rok, ncol = 1) +
   theme(legend.position="bottom", legend.box = "horizontal") + 
   scale_fill_manual(name="", values=brewer.pal(4, "Set1"))
 ```
@@ -136,7 +136,7 @@ ggplot(zycie89, aes(x=wiek_kat, y=waga, fill=zadowolenie)) +
 ```{r}
 ggplot(zycie89, aes(x=wiek_kat, y=waga, fill=zadowolenie)) + 
   geom_bar(stat="identity", position = "fill") +
-  facet_grid(rok~.) +
+  facet_wrap(~ rok, ncol = 1) +
   theme(legend.position="bottom", legend.box = "horizontal") + 
   scale_fill_manual(name="", values=brewer.pal(4, "Set1")) +
   scale_y_continuous(labels = scales::percent) +
@@ -158,7 +158,7 @@ theme_wsj
 ```{r}
 ggplot(zycie89, aes(x=wiek_kat, y=waga, fill=zadowolenie)) + 
   geom_bar(stat="identity", position = "fill") +
-  facet_grid(rok~.) +
+  facet_wrap(~ rok, ncol = 1) +
   theme(legend.position="bottom", legend.box = "horizontal") + 
   scale_fill_manual(name="", values=brewer.pal(4, "Set1")) +
   scale_y_continuous(labels = scales::percent) +
@@ -172,7 +172,7 @@ tam wykorzystywaną.
 ```{r}
 ggplot(zycie89, aes(x=wiek_kat, y=waga, fill=zadowolenie)) + 
   geom_bar(stat="identity", position = "fill") +
-  facet_grid(rok~.) +
+  facet_wrap(~ rok, ncol = 1) +
   theme(legend.position="bottom", legend.box = "horizontal") + 
   scale_fill_manual(name="", values=wsj_pal()(4)) +
   scale_y_continuous(labels = scales::percent) +
@@ -185,7 +185,7 @@ My nadal chcemy mieć legendę na dole. Dodatkowo chcemy białe tło:
 ```{r}
 ggplot(zycie89, aes(x=wiek_kat, y=waga, fill=zadowolenie)) + 
   geom_bar(stat="identity", position = "fill") +
-  facet_grid(rok~.) +
+  facet_wrap(~ rok, ncol = 1) +
   scale_fill_manual(name="", values=wsj_pal()(4)) +
   scale_y_continuous(labels = scales::percent) +
   ylab("Procent osób") + xlab("Wiek") +
@@ -202,7 +202,7 @@ Na końcu poradźmy sobie z legendą, która nie mieści się na wykresie
 ```{r}
 ggplot(zycie89, aes(x=wiek_kat, y=waga, fill=zadowolenie)) + 
   geom_bar(stat="identity", position = "fill") +
-  facet_grid(rok~.) +
+  facet_wrap(~ rok, ncol = 1) +
   scale_fill_manual(name="", values=wsj_pal()(4)) +
   scale_y_continuous(labels = scales::percent) +
   ylab("Procent osób") + xlab("Wiek") +
