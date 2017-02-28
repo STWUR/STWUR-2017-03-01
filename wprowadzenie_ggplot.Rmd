@@ -51,7 +51,7 @@ temp2 = osoby %>% select(ap4, plec_all, waga_2000_ind, wiek6_2000) %>%
   rename(zadowolenie = ap4, plec = plec_all, wiek_kat = wiek6_2000)
 
 zycie89 = rbind(temp, temp2) %>% 
-  mutate(zadowolenie = factor(tolower(zadowolenie), levels = levels(temp$zadowolenie)[-1], ordered = T))
+  mutate(zadowolenie = factor(tolower(zadowolenie), levels = levels(temp$zadowolenie)[-1], ordered = TRUE))
 ```
 
 
@@ -69,7 +69,7 @@ ggplot(zycie89, aes(x = wiek_kat, y = waga, fill = zadowolenie)) +
   geom_bar(stat = "identity", position = "fill")
 ```
 
-Jak pamiętamy, nasze danę dotyczą lat 2003 i 2011. Możemy je rozdzielić za pomocą funkcji *facet_grid*.
+Jak pamiętamy, nasze danę dotyczą lat 2003 i 2011. Możemy je rozdzielić za pomocą funkcji *facet_wrap*.
 
 ```{r}
 ggplot(zycie89, aes(x = wiek_kat, y = waga, fill = zadowolenie)) + 
@@ -213,7 +213,7 @@ ggplot(zycie89, aes(x = wiek_kat, y = waga, fill = zadowolenie)) +
   guides(fill = guide_legend(nrow = 2, byrow = TRUE))  #nadpisujemy legendę
 ```
 
-A może dodatkowo podział na kobiety i mężczyzn?
+A może dodatkowo podział na kobiety i mężczyzn? Wprowadzamy go funkcją *facet_grid*.
 
 ```{r}
 ggplot(zycie89, aes(x = wiek_kat, y = waga, fill = zadowolenie)) + 
@@ -364,3 +364,14 @@ ggplot(zycie89, aes(x=wiek_kat, y=waga, fill=zadowolenie)) +
 * Prezentacja autora pakietu Hadleya Wickhama na temat gramatyki grafiki (*grammar of graphics*) http://ggplot2.org/resources/2007-past-present-future.pdf
 
 * Galeria przykładowych grafik (z kodami!) http://www.r-graph-gallery.com/portfolio/ggplot2-package/
+
+### Przykładowe dane
+
+Przygotowaliśmy zestaw danych dotyczących wykształcenie Polaków w podziale na płcie i lata:
+https://raw.githubusercontent.com/STWUR/STWUR-2017-03-01/master/education_data.csv
+
+```{r, eval=FALSE}
+download.file(url = "https://raw.githubusercontent.com/STWUR/STWUR-2017-03-01/master/edu_dat.csv",
+              destfile = "edu_dat.csv")
+edu_dat <- read.csv("edu_dat.csv")
+```
