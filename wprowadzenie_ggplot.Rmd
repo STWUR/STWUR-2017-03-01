@@ -282,6 +282,34 @@ ggplot(zycie89, aes(x = wiek_kat, y = waga)) +
   guides(fill = guide_legend(nrow = 2, byrow = TRUE)) 
 ```
 
+Kolor czcionki można zmienić, aby wykres był czytelniejszy.
+
+```{r}
+zycie89_ratio = zycie89 %>%
+  group_by(rok, plec, wiek_kat) %>%
+  summarize(ratio = waga[zadowolenie == 'łatwiej żyło mi się przed rokiem 1989']/waga[zadowolenie == 'obecnie żyje mi się łatwiej'],
+            position = waga[zadowolenie == 'łatwiej żyło mi się przed rokiem 1989']/sum(waga))
+
+ggplot(zycie89, aes(x = wiek_kat, y = waga)) + 
+  geom_bar(mapping = aes(fill = zadowolenie), stat = "identity", position = "fill") +
+  geom_text(data = zycie89_ratio, aes(x = wiek_kat, y = 1-position, label = paste0('x', formatC(ratio, digits = 2))),
+            nudge_y = -0.1, color = "white") +
+  facet_grid(plec~rok) +
+  scale_fill_manual(name = "", values = wsj_pal()(4)) +
+  scale_y_continuous(labels = scales::percent) +
+  ylab("Procent osób") + xlab("Wiek") +
+  theme_wsj() + 
+  theme(legend.position = "bottom", legend.box = "horizontal",
+        panel.background = element_rect(fill = "white"),
+        plot.background = element_rect(fill = "white"),
+        legend.background = element_rect(fill = "white"),
+        strip.background = element_rect(fill = "white"),
+        axis.text.x = element_text(size = 13, face = "plain", angle = 90),
+        strip.text.x = element_text(size = 15),
+        strip.text.y = element_text(size = 14)) + 
+  guides(fill = guide_legend(nrow = 2, byrow = TRUE)) 
+```
+
 #### Dodanie tytułu wykresu
 
 ```{r, fig.height = 10, fig.width = 15}
@@ -380,7 +408,7 @@ Jakie dane wybraliśmy?
 
  - płeć,
  - edukację (skategoryzowana),
- - wiek (skategoryzowany),
+ - wiek (skategoryzowany) - wyłącznie osoby po 25 roku życia,
  - województwo,
  - podregion66 (podregion z wydzieleniem dużych aglomeracji),
  - waga,
