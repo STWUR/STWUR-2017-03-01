@@ -290,7 +290,7 @@ ggplot(zycie89, aes(x = wiek_kat, y = waga)) +
   geom_text(data = zycie89_ratio, 
             aes(x = wiek_kat, y = 1-position, 
                 label = paste0('x', formatC(ratio, digits = 2))),
-            nudge_y = -0.05, size = 7) +
+            nudge_y = -0.05, size = 7, color = "white") +
   facet_grid(plec~rok) +
   scale_fill_manual(name = "", values = wsj_pal()(4)) +
   scale_y_continuous(labels = scales::percent) +
@@ -375,3 +375,14 @@ download.file(url = "https://raw.githubusercontent.com/STWUR/STWUR-2017-03-01/ma
               destfile = "edu_dat.csv")
 edu_dat <- read.csv("edu_dat.csv")
 ```
+
+Jakie dane wybraliśmy?
+
+ - płeć,
+ - edukację (skategoryzowana),
+ - wiek (skategoryzowany),
+ - województwo,
+ - podregion66 (podregion z wydzieleniem dużych aglomeracji),
+ - waga,
+ - rok w którym przeprowadzono badanie (2000, 2003, 2005, 2007, 2009, 2011, 2013, 2015).
+ 

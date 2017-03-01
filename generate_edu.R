@@ -6,7 +6,7 @@ library(haven)
 load("osoby.RData")
 
 edu_dat <- do.call(rbind, lapply(0L:7, function(i) {
-  single_year_dat <- osoby[, c(6, 111+i, 66+i, 29+i)] %>% 
+  single_year_dat <- osoby[, c(6, 111+i, 66+i, 29+i, 74, 77)] %>% 
     filter(!is.na(.[[2]]), !is.na(.[[1]])) %>%
     mutate_each(funs(as_factor), -4) %>% 
     filter(.[[3]] %in% c("25-34 lata", "35-44 lata", "45-59 lat", 
@@ -16,11 +16,13 @@ edu_dat <- do.call(rbind, lapply(0L:7, function(i) {
   colnames(single_year_dat) <- c("plec",
                                  "edukacja",
                                  "wiek",
-                                 "waga")
+                                 "waga",
+                                 "wojewodztwo",
+                                 "podregion66")
   
-  group_by(single_year_dat, plec, edukacja, wiek) %>% 
+  group_by(single_year_dat, plec, edukacja, wiek, wojewodztwo, podregion66) %>% 
     summarise(waga = sum(waga, na.rm = TRUE), rok = year) %>% 
     data.frame
 }))
 
-write.csv(edu_dat, file = "education_data.csv")
+write.csv(edu_dat, file = "education_data.csv", row.names = FALSE)
