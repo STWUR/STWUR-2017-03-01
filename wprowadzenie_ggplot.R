@@ -1,37 +1,10 @@
----
-title: "Wizualizacja w R"
-output:
-  html_document: default
----
-
-Dlaczego wizualizacja jest ważna?
-
-* jest użyteczna, pomaga w odbiorze danych
-* potrafi być piękna
-* służy jako narzędzie do opowiadania historii
-
-![ ](https://mir-s3-cdn-cf.behance.net/project_modules/fs/7b83fd26654547.563587c568703.png)
-
-#### Kilka słów wstępu
-
-Na początek uporządkujmy kilka rzeczy. Istnieją trzy główne pakiety graficzne w R - base, lattice i ggplot.
-Każdy ma bardzo duże możliwości, my skupimy się na tym ostatnim, ponieważ sposób tworzenia grafiki
-jest w nim przejrzysty i spójny.
-
-Temat wizualizacji jest bardzo szeroki. Od percepcji obrazu i kolorów przez ludzki mózg do 
-dobrych praktyk. Odsyłam do książki Przemysława Biecka ,,Eseje o sztuce prezentowania danych" (dostępna też online na http://www.biecek.pl/Eseje/).
-
-#### Ładowanie danych
-
-```{r, message=FALSE, warning=FALSE}
+## ---- message=FALSE, warning=FALSE---------------------------------------
 library(ggplot2)
 library(dplyr)
 load("osoby_wybrane_kolumny.Rdata")
 load("osobyDict.RData")
-```
 
-
-```{r}
+## ------------------------------------------------------------------------
 library(haven)
 temp = osoby %>%
   select(fp4, plec_all, waga_2011_ind, wiek6_2011) %>%
@@ -52,56 +25,34 @@ temp2 = osoby %>% select(ap4, plec_all, waga_2000_ind, wiek6_2000) %>%
 
 zycie89 = rbind(temp, temp2) %>% 
   mutate(zadowolenie = factor(tolower(zadowolenie), levels = levels(temp$zadowolenie)[-1], ordered = TRUE))
-```
 
-
-```{r}
+## ------------------------------------------------------------------------
 ggplot(zycie89, aes(x = wiek_kat, y = waga, fill = zadowolenie)) + 
   geom_bar(stat = "identity")
-```
 
-Z tym wykresem jest tak dużo problemów, że trudno nawet go poprawiać krok po kroku... Ale spróbujmy...
-
-Najpierw zmieńmy sumę wag na procent odpowiedzi (mierzony wagami).
-
-```{r}
+## ------------------------------------------------------------------------
 ggplot(zycie89, aes(x = wiek_kat, y = waga, fill = zadowolenie)) + 
   geom_bar(stat = "identity", position = "fill")
-```
 
-Jak pamiętamy, nasze danę dotyczą lat 2003 i 2011. Możemy je rozdzielić za pomocą funkcji *facet_wrap*.
-
-```{r}
+## ------------------------------------------------------------------------
 ggplot(zycie89, aes(x = wiek_kat, y = waga, fill = zadowolenie)) + 
   geom_bar(stat = "identity", position = "fill") +
   facet_wrap(~ rok, ncol = 1)
-```
 
-Dla większej przejrzystości umieścmy legendę na dole. W ggplot można sterować każdym elementem wyglądu wykresu
-korzystając z funkcji *theme*.
-
-```{r}
+## ------------------------------------------------------------------------
 ggplot(zycie89, aes(x = wiek_kat, y = waga, fill = zadowolenie)) + 
   geom_bar(stat = "identity", position = "fill") +
   facet_wrap(~ rok, ncol = 1) +
   theme(legend.position = "bottom", legend.box = "horizontal")
-```
 
-Zmieńmy kolory na wybrane przez nas.
-
-```{r}
+## ------------------------------------------------------------------------
 ggplot(zycie89, aes(x = wiek_kat, y = waga, fill = zadowolenie)) + 
   geom_bar(stat = "identity", position = "fill") +
   facet_wrap(~ rok, ncol = 1) +
   theme(legend.position = "bottom", legend.box = "horizontal") + 
   scale_fill_manual(name = "", values = c("chartreuse3", "gray", "blue", "red"))
-```
 
-### Manipulacja osi
-
-Zmieńmy oznaczenia na osi y i x. Na osi y chcemy mieć procenty, a osi x chcemy zmienić nazwę.
-
-```{r}
+## ------------------------------------------------------------------------
 ggplot(zycie89, aes(x = wiek_kat, y = waga, fill = zadowolenie)) + 
   geom_bar(stat = "identity", position = "fill") +
   facet_wrap(~ rok, ncol = 1) +
@@ -109,29 +60,19 @@ ggplot(zycie89, aes(x = wiek_kat, y = waga, fill = zadowolenie)) +
   scale_fill_manual(name = "", values = c("chartreuse3", "gray", "blue", "red")) +
   scale_y_continuous(labels = scales::percent) +
   ylab("Procent osób") + xlab("Wiek")
-```
 
-### Wybór kolorów
-
-Można skorzystać z pakiety **RColorBrewer**, aby skorzystać z palet kolorów zdefiniowanych
-przez [Cynthię Brewer](http://www.colorbrewer.org/).
-
-```{r}
+## ------------------------------------------------------------------------
 library(RColorBrewer)
 display.brewer.all()
-```
 
-```{r}
+## ------------------------------------------------------------------------
 ggplot(zycie89, aes(x = wiek_kat, y = waga, fill = zadowolenie)) + 
   geom_bar(stat = "identity", position = "fill") +
   facet_wrap(~ rok, ncol = 1) +
   theme(legend.position = "bottom", legend.box = "horizontal") + 
   scale_fill_manual(name = "", values = brewer.pal(4, "Set1"))
-```
 
-### Oznaczenia na osiach
-
-```{r}
+## ------------------------------------------------------------------------
 ggplot(zycie89, aes(x = wiek_kat, y = waga, fill = zadowolenie)) + 
   geom_bar(stat = "identity", position = "fill") +
   facet_wrap(~ rok, ncol = 1) +
@@ -139,21 +80,12 @@ ggplot(zycie89, aes(x = wiek_kat, y = waga, fill = zadowolenie)) +
   scale_fill_manual(name = "", values = brewer.pal(4, "Set1")) +
   scale_y_continuous(labels = scales::percent) +
   ylab("Procent osób") + xlab("Wiek") 
-```
 
-
-### Wygląd całego wykresu
-
-W ggplot definiować można swoje własne motywy wykresu (*themes*). Część popularnych, między innymi wzorowanych
-na znanych programach, portalach i czasopismach, znajduje się w pakiecie **ggthemes**. Dostajemy dodatkowo
-mnóstwo nowych palet kolorów!
-
-```{r}
+## ------------------------------------------------------------------------
 library(ggthemes)
 theme_wsj
-```
 
-```{r}
+## ------------------------------------------------------------------------
 ggplot(zycie89, aes(x = wiek_kat, y = waga, fill = zadowolenie)) + 
   geom_bar(stat = "identity", position = "fill") +
   facet_wrap(~ rok, ncol = 1) +
@@ -162,12 +94,8 @@ ggplot(zycie89, aes(x = wiek_kat, y = waga, fill = zadowolenie)) +
   scale_y_continuous(labels = scales::percent) +
   ylab("Procent osób") + xlab("Wiek") +
   theme_tufte()
-```
 
-Zobaczmy teraz na motyw wzorowany na gazecie Wall Street Journal, użyjemy też paletę kolorów 
-tam wykorzystywaną.
-
-```{r}
+## ------------------------------------------------------------------------
 ggplot(zycie89, aes(x = wiek_kat, y = waga, fill = zadowolenie)) + 
   geom_bar(stat = "identity", position = "fill") +
   facet_wrap(~ rok, ncol = 1) +
@@ -176,11 +104,8 @@ ggplot(zycie89, aes(x = wiek_kat, y = waga, fill = zadowolenie)) +
   scale_y_continuous(labels = scales::percent) +
   ylab("Procent osób") + xlab("Wiek") +
   theme_wsj()
-```
 
-My nadal chcemy mieć legendę na dole. Dodatkowo chcemy białe tło:
-
-```{r}
+## ------------------------------------------------------------------------
 ggplot(zycie89, aes(x = wiek_kat, y = waga, fill = zadowolenie)) + 
   geom_bar(stat = "identity", position = "fill") +
   facet_wrap(~ rok, ncol = 1) +
@@ -193,11 +118,8 @@ ggplot(zycie89, aes(x = wiek_kat, y = waga, fill = zadowolenie)) +
         plot.background = element_rect(fill = "white"),
         legend.background = element_rect(fill = "white"),
         strip.background = element_rect(fill = "white"))
-```
 
-Poradźmy sobie teraz z legendą, która nie mieści się na wykresie
-
-```{r}
+## ------------------------------------------------------------------------
 ggplot(zycie89, aes(x = wiek_kat, y = waga, fill = zadowolenie)) + 
   geom_bar(stat = "identity", position = "fill") +
   facet_wrap(~ rok, ncol = 1) +
@@ -211,11 +133,8 @@ ggplot(zycie89, aes(x = wiek_kat, y = waga, fill = zadowolenie)) +
         legend.background = element_rect(fill = "white"),
         strip.background = element_rect(fill = "white"))+ 
   guides(fill = guide_legend(nrow = 2, byrow = TRUE))  #nadpisujemy legendę
-```
 
-A może dodatkowo podział na kobiety i mężczyzn? Wprowadzamy go funkcją *facet_grid*.
-
-```{r}
+## ------------------------------------------------------------------------
 ggplot(zycie89, aes(x = wiek_kat, y = waga, fill = zadowolenie)) + 
   geom_bar(stat = "identity", position = "fill") +
   facet_grid(plec~rok) +
@@ -229,11 +148,8 @@ ggplot(zycie89, aes(x = wiek_kat, y = waga, fill = zadowolenie)) +
         legend.background = element_rect(fill = "white"),
         strip.background = element_rect(fill = "white"))+ 
   guides(fill = guide_legend(nrow = 2, byrow = TRUE)) 
-```
 
-Poprawmy nieco wygląd osi
-
-```{r}
+## ------------------------------------------------------------------------
 ggplot(zycie89, aes(x = wiek_kat, y = waga, fill = zadowolenie)) + 
   geom_bar(stat = "identity", position = "fill") +
   facet_grid(plec~rok) +
@@ -250,13 +166,8 @@ ggplot(zycie89, aes(x = wiek_kat, y = waga, fill = zadowolenie)) +
         strip.text.x = element_text(size = 15),
         strip.text.y = element_text(size = 14)) + 
   guides(fill = guide_legend(nrow = 2, byrow = TRUE)) 
-```
 
-#### Dodawanie tekstu
-
-Barplot nie jest jedyną możliwością zrobienia wykresu w ggplot. Aby to zobrazować dodajmy nową informację do naszego wykresu. Interesujące jest, jaki jest stosunek liczby osób lepiej oceniających swoje życie przed 89 rokiem niż obecnie.
-
-```{r}
+## ------------------------------------------------------------------------
 zycie89_ratio = zycie89 %>%
   group_by(rok, plec, wiek_kat) %>%
   summarize(ratio = waga[zadowolenie == 'łatwiej żyło mi się przed rokiem 1989']/waga[zadowolenie == 'obecnie żyje mi się łatwiej'],
@@ -280,11 +191,8 @@ ggplot(zycie89, aes(x = wiek_kat, y = waga)) +
         strip.text.x = element_text(size = 15),
         strip.text.y = element_text(size = 14)) + 
   guides(fill = guide_legend(nrow = 2, byrow = TRUE)) 
-```
 
-Kolor czcionki można zmienić, aby wykres był czytelniejszy.
-
-```{r}
+## ------------------------------------------------------------------------
 zycie89_ratio = zycie89 %>%
   group_by(rok, plec, wiek_kat) %>%
   summarize(ratio = waga[zadowolenie == 'łatwiej żyło mi się przed rokiem 1989']/waga[zadowolenie == 'obecnie żyje mi się łatwiej'],
@@ -308,11 +216,8 @@ ggplot(zycie89, aes(x = wiek_kat, y = waga)) +
         strip.text.x = element_text(size = 15),
         strip.text.y = element_text(size = 14)) + 
   guides(fill = guide_legend(nrow = 2, byrow = TRUE)) 
-```
 
-#### Dodanie tytułu wykresu
-
-```{r, fig.height = 10, fig.width = 15}
+## ---- fig.height = 10, fig.width = 15------------------------------------
 ggplot(zycie89, aes(x = wiek_kat, y = waga)) + 
   geom_bar(mapping = aes(fill = zadowolenie), stat = "identity", position = "fill") +
   geom_text(data = zycie89_ratio, 
@@ -338,13 +243,8 @@ ggplot(zycie89, aes(x = wiek_kat, y = waga)) +
   guides(fill = guide_legend(nrow = 2, byrow = TRUE, override.aes = aes(size = 10))) +
   ggtitle("Stosunek Polaków do życia w PRL", 
           subtitle = "liczby na wykresie odpowiadają temu, ile razy więcej \n jest oceniających lepiej swoje życie w PRL")
-```
 
-### Jak to zrobić źle?
-
-Na przestrogę zostawiam też formatowanie kodu. Nie należy tego powielać!!!
-
-```{r}
+## ------------------------------------------------------------------------
 background <- "white"
 main_color <- rgb(red=197, green=38, blue=36, maxColorValue = 255)
 blue = rgb(red=7, green=58, blue=118, maxColorValue = 255)
@@ -383,34 +283,9 @@ ggplot(zycie89, aes(x=wiek_kat, y=waga, fill=zadowolenie)) +
   guides(fill=guide_legend(nrow=2,byrow=TRUE)) +
   scale_y_continuous(labels = scales::percent) +
   ylab("Procent osób") + xlab("Wiek") + myTheme
-```
 
-### Co dalej?
+## ---- eval=FALSE---------------------------------------------------------
+## download.file(url = "https://raw.githubusercontent.com/STWUR/STWUR-2017-03-01/master/edu_dat.csv",
+##               destfile = "edu_dat.csv")
+## edu_dat <- read.csv("edu_dat.csv")
 
-* Bardzo dobra ściągawka https://www.rstudio.com/wp-content/uploads/2015/03/ggplot2-cheatsheet.pdf
-* Książka Winstona Changa http://www.cookbook-r.com/Graphs/
-* Prezentacja autora pakietu Hadleya Wickhama na temat gramatyki grafiki (*grammar of graphics*) http://ggplot2.org/resources/2007-past-present-future.pdf
-
-* Galeria przykładowych grafik (z kodami!) http://www.r-graph-gallery.com/portfolio/ggplot2-package/
-
-### Przykładowe dane
-
-Przygotowaliśmy zestaw danych dotyczących wykształcenie Polaków w podziale na płcie i lata:
-https://raw.githubusercontent.com/STWUR/STWUR-2017-03-01/master/education_data.csv
-
-```{r, eval=FALSE}
-download.file(url = "https://github.com/STWUR/STWUR-2017-03-01/blob/master/education_data.csv",
-              destfile = "education_data.csv")
-edu_dat <- read.csv("education_data")
-```
-
-Jakie dane wybraliśmy?
-
- - płeć,
- - edukację (skategoryzowana),
- - wiek (skategoryzowany) - wyłącznie osoby po 25 roku życia,
- - województwo,
- - podregion66 (podregion z wydzieleniem dużych aglomeracji),
- - waga,
- - rok w którym przeprowadzono badanie (2000, 2003, 2005, 2007, 2009, 2011, 2013, 2015).
- 
